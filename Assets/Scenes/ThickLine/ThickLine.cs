@@ -41,13 +41,30 @@ namespace LLGraphicsUnity {
 					GL.LoadIdentity();
 					GL.LoadOrtho();
 
-					using (mat.GetScope(new GLProperty(data) { Color = Color.magenta }))
+					using (mat.GetScope(new GLProperty(data) {
+						Color = Color.magenta,
+						LineThickness = 5f
+					}, ShaderPass.Line))
 					using (new GLModelViewScope(Matrix4x4.TRS(new Vector3(scale.x * 0.5f, scale.y * .5f, -1), rot, .8f * scale))) {
 						Quad.LineStrip();
 					}
-					using (mat.GetScope(new GLProperty(data) { Color = Color.cyan }))
+					using (mat.GetScope(new GLProperty(data) {
+						Color = Color.cyan ,
+						LineThickness = 5f,
+					}, ShaderPass.Line))
 					using (new GLModelViewScope(Matrix4x4.TRS(new Vector3(scale.x * 0.5f, scale.y * 1.5f, -1), rot, .8f * scale))) {
 						Circle.LineStrip(0.5f, 50);
+					}
+					using (mat.GetScope(new GLProperty(data) { 
+						Color = Color.green, 
+						LineThickness = 10f
+					}, ShaderPass.Line))
+					using (new GLModelViewScope(Matrix4x4.TRS(
+						new Vector3(scale.x * 1.5f, scale.y * 1.5f, -1), rot, .8f * scale))) {
+						GL.Begin(GL.LINES);
+						GL.Vertex3(-0.5f, -0.5f, 0f);
+						GL.Vertex3(0.5f, 0.5f, 0f);
+						GL.End();
 					}
 				}
 			}
@@ -58,7 +75,10 @@ namespace LLGraphicsUnity {
 				GL.LoadProjectionMatrix(c.projectionMatrix);
 				GL.modelview = c.worldToCameraMatrix;
 
-				using (mat.GetScope(new GLProperty(data) { Color = Color.yellow }))
+				using (mat.GetScope(new GLProperty(data) { 
+					Color = Color.yellow, 
+					LineThickness = 5f 
+				}, ShaderPass.Line))
 				using (new GLModelViewScope(Matrix4x4.TRS(new Vector3(.5f, .5f, 0), rot, 4f * Vector3.one))) {
 					Box.Lines();
 				}
