@@ -31,13 +31,14 @@ namespace LLGraphicsUnity {
 			};
 			var aspect = c.aspect;
 			var size = 0.5f;
-			var rot = Quaternion.identity;
-			var scale = new Vector3(size / aspect, size, 1f);
 
 			if (c == Camera.main) {
 
 				using (mat.GetScope(data))
 				using (new GLMatrixScope()) {
+					var rot = Quaternion.identity;
+					var scale = new Vector3(size / aspect, size, 1f);
+
 					GL.LoadIdentity();
 					GL.LoadOrtho();
 
@@ -49,18 +50,10 @@ namespace LLGraphicsUnity {
 						Quad.LineStrip();
 					}
 					using (mat.GetScope(new GLProperty(data) {
-						Color = Color.cyan ,
-						LineThickness = 5f,
-					}, ShaderPass.Line))
-					using (new GLModelViewScope(Matrix4x4.TRS(new Vector3(scale.x * 0.5f, scale.y * 1.5f, -1), rot, .8f * scale))) {
-						Circle.LineStrip(0.5f, 50);
-					}
-					using (mat.GetScope(new GLProperty(data) { 
-						Color = Color.green, 
+						Color = Color.cyan,
 						LineThickness = 10f
 					}, ShaderPass.Line))
-					using (new GLModelViewScope(Matrix4x4.TRS(
-						new Vector3(scale.x * 1.5f, scale.y * 1.5f, -1), rot, .8f * scale))) {
+					using (new GLModelViewScope(Matrix4x4.TRS(new Vector3(scale.x * 0.5f, scale.y * 1.5f, -1), rot, .8f * scale))) {
 						GL.Begin(GL.LINES);
 						GL.Vertex3(-0.5f, -0.5f, 0f);
 						GL.Vertex3(0.5f, 0.5f, 0f);
@@ -69,18 +62,37 @@ namespace LLGraphicsUnity {
 				}
 			}
 
-			rot = Quaternion.Euler(new Vector3(-5f, 15f, 0f));
 			using (new GLMatrixScope()) {
 				GL.LoadIdentity();
 				GL.LoadProjectionMatrix(c.projectionMatrix);
 				GL.modelview = c.worldToCameraMatrix;
 
-				using (mat.GetScope(new GLProperty(data) { 
-					Color = Color.yellow, 
-					LineThickness = 5f 
+				var cmain = Camera.main;
+				var t = Time.time;
+				var scale = cmain.orthographicSize * Vector3.one;
+
+				var pos = cmain.ViewportToWorldPoint(0.5f * new Vector3(1.5f / aspect, 0.5f));
+				pos.z = 0f;
+				var rot = Quaternion.Euler(new Vector3(-5f, 45 * t, 0f));
+				var vm = Matrix4x4.TRS(pos, rot, 0.6f * scale);
+				using (mat.GetScope(new GLProperty(data) {
+					Color = Color.yellow,
+					LineThickness = 5f
 				}, ShaderPass.Line))
-				using (new GLModelViewScope(Matrix4x4.TRS(new Vector3(.5f, .5f, 0), rot, 4f * Vector3.one))) {
+				using (new GLModelViewScope(vm)) {
 					Box.Lines();
+				}
+
+				pos = cmain.ViewportToWorldPoint(0.5f * new Vector3(1.5f / aspect, 1.5f));
+				pos.z = 0f;
+				rot = Quaternion.Euler(new Vector3(-5f, 45f * t + 15f, 0f));
+				vm = Matrix4x4.TRS(pos, rot, 0.8f * scale);
+				using (mat.GetScope(new GLProperty(data) {
+					Color = Color.grey,
+					LineThickness = 5f
+				}, ShaderPass.Line))
+				using (new GLModelViewScope(vm)) {
+					Circle.LineStrip(0.5f, 50);
 				}
 			}
 		}
