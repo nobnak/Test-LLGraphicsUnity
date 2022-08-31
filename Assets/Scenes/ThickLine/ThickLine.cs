@@ -1,3 +1,4 @@
+using Gist2.Extensions.ScreenExt;
 using LLGraphicsUnity.Shapes;
 using System.Collections;
 using System.Collections.Generic;
@@ -75,7 +76,7 @@ namespace LLGraphicsUnity {
 				var t = Time.time;
 				var scale = cmain.orthographicSize * Vector3.one;
 
-				var pos = cmain.GetWorldPositionFromAspectUV(1.5f, 0.5f);
+				var pos = cmain.IsometricUVToWorld(1.5f, 0.5f);
 				var rot = Quaternion.Euler(new Vector3(-5f, 45 * t, -30f));
 				var vm = Matrix4x4.TRS(pos, rot, 0.6f * scale);
 				using (mat.GetScope(new GLProperty(data) {
@@ -86,7 +87,7 @@ namespace LLGraphicsUnity {
 					Box.Lines();
 				}
 
-				pos = cmain.GetWorldPositionFromAspectUV(1.5f, 1.5f);
+				pos = cmain.IsometricUVToWorld(1.5f, 1.5f);
 				rot = Quaternion.Euler(new Vector3(-5f, 45f * t + 15f, 0));
 				vm = Matrix4x4.TRS(pos, rot, 0.8f * scale);
 				using (mat.GetScope(new GLProperty(data) {
@@ -97,7 +98,7 @@ namespace LLGraphicsUnity {
 					Circle.LineStrip(0.5f, 50);
 				}
 
-				pos = cmain.GetWorldPositionFromAspectUV(0.5f, 0.5f);
+				pos = cmain.IsometricUVToWorld(0.5f, 0.5f);
 				rot = Quaternion.Euler(new Vector3(-15f, 45f * t + 30f, 30f));
 				vm = Matrix4x4.TRS(pos, rot, 0.4f * scale);
 				using (mat.GetScope(new GLProperty(data) { Color = Color.green }))
@@ -108,14 +109,4 @@ namespace LLGraphicsUnity {
 		}
 		#endregion
 	}
-
-	public static class ThickLineExtension { 
-        public static Vector3 GetWorldPositionFromAspectUV(
-			this Camera cmain, float x, float y) {
-			float aspect = cmain.aspect;
-			Vector3 pos = cmain.ViewportToWorldPoint(0.5f * new Vector3(x / aspect, y));
-            pos.z = 0f;
-            return pos;
-        }
-    }
 }
