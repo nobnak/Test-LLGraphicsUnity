@@ -3,6 +3,7 @@ using LLGraphicsUnity.Shapes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace LLGraphicsUnity {
 
@@ -28,13 +29,13 @@ namespace LLGraphicsUnity {
                 Color = Color.white,
                 MainTex = null,
                 ZWriteMode = false,
-                ZTestMode = GLProperty.ZTestEnum.ALWAYS,
+                ZTestMode = CompareFunction.Always,
             }; 
 			var data_leq = new GLProperty() {
                 Color = Color.white,
                 MainTex = null,
                 ZWriteMode = false,
-                ZTestMode = GLProperty.ZTestEnum.LESSEQUAL,
+                ZTestMode = CompareFunction.LessEqual,
             };
             var aspect = c.aspect;
 			var size = 0.5f;
